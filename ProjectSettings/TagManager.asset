@@ -7,6 +7,9 @@ TagManager:
   - Ground
   - Wall
   - Cloud
+  - Weapon
+  - Slide
+  - Checkpoint
   layers:
   - Default
   - TransparentFX
@@ -19,7 +22,7 @@ TagManager:
   - Weapon
   - Cloud
   - Player
-  - 
+  - Checkpoint
   - 
   - 
   - 

@@ -1,15 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryItemController : MonoBehaviour
 {
 
     Item item;
+    //public Button removeFromSelectionForCrafting;
+   // public Button addToSelectionForCrafting;
+
 
     public void RemoveItem() {
 
         InventoryManager.Instance.RemoveItem(item);
+        Destroy(gameObject);
 
     }
 

@@ -4,18 +4,17 @@ using UnityEngine;
 
 public class EnemyDamage : MonoBehaviour
 {
-    public int damage;                  // dealt damage by enemy (can vary with each type of enemy)
+    public int damage = 1;                  // dealt damage by enemy (can vary with each type of enemy)
     public PlayerHealth playerHealth;   // player health script variable
     public Player playerMovement;       // player movement script variable
+    public EnemyHurt enemyHurt;
 
     // on collision, call player health's take damage function
     // + do player's knockback effect movement
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
-        {
-            Debug.Log(collision.gameObject.name);
-           
+        {           
             
             if (collision.transform.position.x <= transform.position.x)
             {
@@ -25,9 +24,15 @@ public class EnemyDamage : MonoBehaviour
             {
                 playerMovement.KnockFromRight = false;
             }
-            playerMovement.Knockback();
-
-            playerHealth.TakeDamage(damage);
+            
+            if (!playerHealth.IsInvincible())
+            {
+                //Player knockback
+                playerMovement.Knockback();
+                playerHealth.TakeDamage(damage);
+                if (playerMovement.has_counter) enemyHurt.TakeDamage(1);
+            }
+            
         }
     }
 }

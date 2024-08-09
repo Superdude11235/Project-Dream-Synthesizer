@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {
     #region Variables
     //Movement variables
     [Header("Run Values")]
-    [SerializeField] private float maxWalkSpeed = 6f;
-    [SerializeField] private float maxRunSpeed = 10f;
+    [SerializeField] private float currentMaxSpeed = 11f;
+    [SerializeField] private float maxWalkSpeed = 11f;
+    [SerializeField] private float maxRunSpeed = 15f;
     [SerializeField] private float runAccelAmount = 13f;
     [SerializeField] private float runDeccelAmount = 16f;
 
@@ -39,6 +42,7 @@ public class Player : MonoBehaviour
     [Header("Slide Values")]
     [SerializeField] private float slideForce = 10f;
     [SerializeField] private float slideLength = 0.5f;
+    [SerializeField] private int slideStrengh = 1;
 
     //Knockback effect variables
     [Header("Knockback Values")]
@@ -60,9 +64,13 @@ public class Player : MonoBehaviour
     private InputAction run;
     private InputAction attack;
     private InputAction duck;
+    private InputAction interact;
     
     //Rigidbody2D reference
     private Rigidbody2D rb;
+
+    //Health reference
+    private PlayerHealth playerHealth;
 
     //Sprite reference
     private Transform sprite;
@@ -88,14 +96,42 @@ public class Player : MonoBehaviour
     bool jump_released = false;
     bool attack_released = false;
     bool is_on_cloud = false;
-    bool has_cloud_boots = false;
+    public bool has_cloud_boots { get; private set; } = false;
+    bool interact_pressed = false;
+    bool interact_pressed_fixed = false;
 
+    //Enchantment trackers
+    bool damage_up = false;
+    bool has_crit_chance = false;
+    bool has_hp_drain = false;
+
+    bool hp_up = false;
+    bool speed_up = false;
+    public bool has_counter { get; private set; } = false;
+
+    //Enchantment variables
+    [SerializeField] private float crit_chance = 0.2f;
+
+    
     //Weapon tracker
-    enum ActiveWeapon {NONE, SWORD, BOW, SPARK};
-    ActiveWeapon activeWeapon = ActiveWeapon.NONE;
+    public enum Weapon {NONE, SWORD, BOW, SPARK};
+    Weapon activeWeapon = Weapon.NONE;
+    //private Item ArmorItem;
+
+    //Equipped weapon strength
+    
 
     //Weapon hitbox
+    [Header("Weapons")]
+    [SerializeField] private int weaponStrength = 1;
+    [SerializeField] private Item TestWeaponItem;
+    public Item WeaponItem;
     [SerializeField] private SwordAnimator swordAnimator;
+
+    //Slide Hitbox Reference
+    [SerializeField] private GameObject slideHitbox;
+
+
 
     //Arrow Reference
     [SerializeField] private GameObject Arrow;
@@ -104,6 +140,17 @@ public class Player : MonoBehaviour
     //Bow Variables
     [SerializeField] private float BowChargeTime = 0.3f;
 
+    public enum Armor { NONE, LEATHER, IRON};
+    [Header("Armor")]
+    [SerializeField] private Item TestArmorItem;
+    public Item ArmorItem;
+    Armor activeArmor = Armor.NONE;
+    
+
+
+    //Inventory reference
+    [Header("Inventory")]
+    public InventoryManager Inventory;
 
     //Debug -- set to true for extra debugging tools
     bool debug = true;
@@ -118,6 +165,7 @@ public class Player : MonoBehaviour
         sprite = transform.Find("Sprite");
         spriteRenderer = sprite.GetComponent<SpriteRenderer>();
         spriteScale = sprite.localScale;
+        playerHealth = GetComponent<PlayerHealth>();
 
         //Ignore collision with clouds if player does not have cloud boots
         Physics2D.IgnoreLayerCollision(gameObject.layer, CLOUD_LAYER, !has_cloud_boots);
@@ -131,13 +179,18 @@ public class Player : MonoBehaviour
         run = playerControls.Player.Run;
         attack = playerControls.Player.Attack;
         duck = playerControls.Player.Duck;
+        interact = playerControls.Player.Interact;
         playerControls.Enable();
+
+        //Subscribe load data to event
+        Events.Loadprogress += LoadPlayer;
        
     }
 
     private void OnDisable()
     {
        playerControls.Disable();
+        Events.Loadprogress -= LoadPlayer;
     }
 
     private void Update()
@@ -149,6 +202,7 @@ public class Player : MonoBehaviour
         DuckCheck();
         AttackCheck();
         AnimationHandle();
+        InteractCheck();
         if (debug) DebugTools();
 
     }
@@ -163,20 +217,20 @@ public class Player : MonoBehaviour
             switch (activeWeapon)
             {
                 //Perform no attack if player has no weapon
-                case ActiveWeapon.NONE:
-                    activeWeapon = ActiveWeapon.SWORD;
+                case Weapon.NONE:
+                    activeWeapon = Weapon.SWORD;
                     Debug.Log("sword equipped");
                     break;
-                case ActiveWeapon.SWORD:
-                    activeWeapon = ActiveWeapon.BOW;
+                case Weapon.SWORD:
+                    activeWeapon = Weapon.BOW;
                     Debug.Log("bow equipped");
                     break;
-                case ActiveWeapon.BOW:
-                    activeWeapon = ActiveWeapon.SPARK;
+                case Weapon.BOW:
+                    activeWeapon = Weapon.SPARK;
                     Debug.Log("spark equipped");
                     break;
-                case ActiveWeapon.SPARK:
-                    activeWeapon = ActiveWeapon.NONE;
+                case Weapon.SPARK:
+                    activeWeapon = Weapon.NONE;
                     Debug.Log("nothing equipped");
                     break;
             }
@@ -212,7 +266,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            LoadPlayer();
+            SceneManager.LoadSceneAsync("PlayerTest");
             Debug.Log("Progress loaded. Position: " + transform.position);
         }
 
@@ -221,6 +275,9 @@ public class Player : MonoBehaviour
             DeleteSavePlayer();
             Debug.Log("Save file deleted.");
         }
+
+        if (Input.GetKeyDown(KeyCode.O)) SetWeapon(TestWeaponItem);
+        if (Input.GetKeyDown(KeyCode.I)) SetArmor(TestArmorItem);
     }
 
     private void JumpCheck()
@@ -275,6 +332,11 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void InteractCheck()
+    {
+        if (interact.triggered) interact_pressed = true;
+    }
+
     private void AnimationHandle()
     {
         //Temporary (hopefully) animation to represent ducking
@@ -284,7 +346,7 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
- 
+
             MoveHandle();
             JumpHandle();
             jump_pressed = false;
@@ -298,6 +360,14 @@ public class Player : MonoBehaviour
             JumpReleaseHandle();
             jump_released = false;
             KnockbackHandle();
+        InteractHandle();
+            interact_pressed = false;
+    }
+
+    private void InteractHandle()
+    {
+        //Causes bugs without this extra function...
+        interact_pressed_fixed = interact_pressed;
     }
 
     private void KnockbackHandle()
@@ -338,7 +408,7 @@ public class Player : MonoBehaviour
         //Return if attack wasn't released
         if (!attack_released) return;
 
-        if (activeWeapon == ActiveWeapon.BOW)
+        if (activeWeapon == Weapon.BOW)
         {
             if (bowTimer > -1f && bowTimer <= 0f)
             {
@@ -355,15 +425,15 @@ public class Player : MonoBehaviour
         switch (activeWeapon)
         {
             //Perform no attack if player has no weapon
-            case ActiveWeapon.NONE:
+            case Weapon.NONE:
                 return;
-            case ActiveWeapon.SWORD:
+            case Weapon.SWORD:
                 swordAnimator.SwingSword();
                 break;
-            case ActiveWeapon.BOW:
+            case Weapon.BOW:
                 BowStartCharge();
                 break;
-            case ActiveWeapon.SPARK:
+            case Weapon.SPARK:
                 break;
         }
     }
@@ -382,7 +452,7 @@ public class Player : MonoBehaviour
         if (isKnocback()) return;
 
         //Speed is dependent on whether character is running
-        float maxSpeed = (is_running) ? maxRunSpeed : maxWalkSpeed;
+        float maxSpeed = (is_running) ? maxRunSpeed : currentMaxSpeed;
         //Calculate our desired velocity
         float targetSpeed = moveDirection * maxSpeed;
 
@@ -409,6 +479,11 @@ public class Player : MonoBehaviour
 
         //Check if player is grounded and can jump, or if they were recently on ground and can do coyote jump, or can do cloud jump
         if (!IsGrounded() && !CanCloudJump() && !jumpCoyoted() && !flyMode) return;
+        
+
+        //Reset jump buffer and coyote time
+        jumpBufferTimer = -1f;
+        jumpCoyoteTimer = -1f;
 
 
         //Either sliding prevents jumping, or jumping can cancel sliding.
@@ -423,10 +498,15 @@ public class Player : MonoBehaviour
 
         //Apply upward impulse
         //Use stronger jump if on cloud; otherwise, do normal jump.
-        if (CanCloudJump())
+        if (IsGrounded())
+        {
+            rb.AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);
+        }
+        else if (CanCloudJump() || flyMode)
         {
             rb.AddForce(cloudJumpForce * Vector2.up, ForceMode2D.Impulse);
         }
+        //If not on ground or cloud, must be a coyote jump
         else
         {
             rb.AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);
@@ -462,11 +542,16 @@ public class Player : MonoBehaviour
     private void FlipHandle()
     {
         //Flips character sprite
-        if (moveDirection != 0)
-        {
-            spriteRenderer.flipX = (moveDirection < 0);
-            FlipWeapon();
-        }
+
+        //Old flip code
+        //if (moveDirection != 0)
+        //{
+        //    spriteRenderer.flipX = (moveDirection < 0);
+        //    FlipWeapon();
+        //}
+
+        if ((moveDirection > 0) && IsFlipped()) transform.localScale = new Vector3 (1, 1, 1);
+        if (moveDirection < 0 && !IsFlipped()) transform.localScale = new Vector3(-1, 1, 1);
     }
 
     private void FlipWeapon()
@@ -500,13 +585,14 @@ public class Player : MonoBehaviour
         rb.velocity = Vector2.zero;
 
         //Find direction
-        Vector2 slideDirection = (spriteRenderer.flipX) ? Vector2.left : Vector2.right;
+        Vector2 slideDirection = (IsFlipped()) ? Vector2.left : Vector2.right;
 
         //Apply sideways force
         rb.AddForce(slideForce * slideDirection, ForceMode2D.Impulse);
 
         //Start slide timer
         slideTimer = slideLength;
+        slideHitbox.SetActive(true);
     }
 
     private void GroundedHandle()
@@ -542,7 +628,11 @@ public class Player : MonoBehaviour
         if (is_sliding)
         {
             slideTimer -= Time.deltaTime;
-            if (slideTimer < 0) is_sliding = false;
+            if (slideTimer < 0)
+            {
+                is_sliding = false;
+                slideHitbox.SetActive(false);
+            }
         }
 
         //Jump timers
@@ -550,7 +640,7 @@ public class Player : MonoBehaviour
         if (jumpBufferTimer > 0f) jumpBufferTimer -= Time.deltaTime;
 
         //Bow timers; only activate if bow is equipped and charging
-        if (activeWeapon == ActiveWeapon.BOW)
+        if (activeWeapon == Weapon.BOW)
         {
             if (bowTimer > 0f) bowTimer -= Time.deltaTime;
         }
@@ -563,19 +653,33 @@ public class Player : MonoBehaviour
 
     public void SavePlayer()
     {
-        SaveSystem.SavePlayer(this);
+        SaveSystem.Save(this, Inventory);
     }
 
     public void LoadPlayer()
     {
-        SaveData data = SaveSystem.LoadData();
-        if (data == null) return;
+        //SceneManager.LoadSceneAdsync("PlayerTest");
 
+        SaveData data = SaveSystem.LoadData();
+        Inventory.LoadItems(data);
+
+
+        if (data == null) return;
+        //Load position
         Vector3 position;
         position.x = data.position[0];
         position.y = data.position[1];
         position.z = data.position[2];
         transform.position = position;
+        rb.velocity = Vector3.zero;
+
+        //Cloud boots
+        if (data.has_cloud_boots) GetCloudBoots();
+        else LoseCloudBoots();
+
+        //Current weapon and armor
+        WeaponItem = data.weaponItem;
+        ArmorItem = data.armorItem;
 
     }
 
@@ -616,7 +720,12 @@ public class Player : MonoBehaviour
 
     private bool IsFlipped()
     {
-        return spriteRenderer.flipX;
+        return transform.localScale.x < 0;
+    }
+
+    public bool IsSliding()
+    {
+        return is_sliding;
     }
 
     public void GetCloudBoots()
@@ -634,5 +743,88 @@ public class Player : MonoBehaviour
     public void DeleteSavePlayer()
     {
         SaveSystem.DeleteData();
+    }
+
+    public void SetWeapon(Item weaponItem)
+    {
+        WeaponItem = weaponItem;
+        if (weaponItem.ItemType == "Sword") activeWeapon = Weapon.SWORD;
+        else if (weaponItem.ItemType == "Bow") activeWeapon = Weapon.BOW;
+        else if (weaponItem.ItemType == "Spark") activeWeapon = Weapon.SPARK;
+        else activeWeapon = Weapon.NONE;
+        ApplyWeaponEnchantments();
+
+    }
+
+    public void SetArmor(Item armorItem)
+    {
+        if (armorItem.ItemType == "Leather") activeArmor = Armor.LEATHER;
+        else if (armorItem.ItemType == "Iron") activeArmor = Armor.IRON;
+        ArmorItem = armorItem;
+        ApplyArmorEnchantments();
+
+    }
+
+    private void ApplyWeaponEnchantments()
+    {
+        //Set weapon enchantments based on what's in the weapon Item
+        damage_up = (WeaponItem.WeaponEnchantmentSlot == Item.WeaponEnchantment.DAMAGE_UP);
+        has_crit_chance = (WeaponItem.WeaponEnchantmentSlot == Item.WeaponEnchantment.CRIT_CHANCE);
+        has_hp_drain = (WeaponItem.WeaponEnchantmentSlot == Item.WeaponEnchantment.HP_DRAIN);
+    }
+
+    private void ApplyArmorEnchantments()
+    {
+        hp_up = (ArmorItem.ArmorEnchantmentSlot == Item.ArmorEnchantment.HP_UP);
+        has_counter = (ArmorItem.ArmorEnchantmentSlot == Item.ArmorEnchantment.COUNTER);
+        speed_up = (ArmorItem.ArmorEnchantmentSlot == Item.ArmorEnchantment.SPEED_UP);
+
+        //Some have instant effects that need to be applied
+        playerHealth.HandleArmorHealth(ArmorItem.ItemType, hp_up);
+        currentMaxSpeed = (speed_up) ? maxRunSpeed : maxWalkSpeed;
+
+    }
+
+    public bool HasHPDrain()
+    {
+        return has_hp_drain;
+    }
+
+    public int GetWeaponStrength()
+    {
+        //Calculate strength of weapon
+        int strength = weaponStrength;
+        if (damage_up)
+        {
+            strength += 1;
+            print("Strength buffed!");
+        }
+        if (has_crit_chance)
+        {
+            if (Random.Range(0f, 1f) < crit_chance)
+            {
+                strength *= 3;
+                print("CRITICAL HIT!!");
+            }
+        }
+
+        return strength;
+        
+    }
+
+    public int GetSlideStrength()
+    {
+        return slideStrengh;
+    }
+
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Checkpoint") && interact_pressed_fixed && IsGrounded())
+        {
+            interact_pressed_fixed = false;
+            SaveSystem.Save(this, Inventory);
+            print("Saved!");
+        }
     }
 }

@@ -16,7 +16,7 @@ public class EnemyMovement : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    void Update()
+    void FixedUpdate()
     {
         // make enemy stop chasing player if player is twice the chase distance away from enemy
         if (Vector2.Distance(transform.position, player.transform.position) > (chaseDistance * 2))

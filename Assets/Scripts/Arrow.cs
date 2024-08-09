@@ -8,6 +8,7 @@ public class Arrow : MonoBehaviour
 {
     [SerializeField] private Vector2 ShotForce = new Vector2(25, 0);
     [SerializeField] private float gravityMultiplier = 0.5f;
+    [SerializeField] private float spawnTime = 4f;
 
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
@@ -22,6 +23,13 @@ public class Arrow : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb.gravityScale = gravityMultiplier;
     }
+
+    private void FixedUpdate()
+    {
+        spawnTime -= Time.deltaTime;
+        if (spawnTime < 0) Destroy(this.gameObject);
+    }
+
     public void ShootArrow(bool isFacingRight)
     {
         if (isFacingRight)

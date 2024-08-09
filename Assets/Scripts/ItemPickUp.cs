@@ -6,11 +6,17 @@ public class ItemPickUp : MonoBehaviour
 {
     bool picked_up = false;
 
-    public Item Item;
+    public ItemBase ItemBase;
+
+    const string PLAYER_TAG = "Player";
 
     void Pickup() {
+        Item.WeaponEnchantment weaponEnchantment = Item.GetRandomWeaponEnchantment();
+        Item.ArmorEnchantment armorEnchantment = Item.GetRandomArmorEnchantment(); ;
 
-        InventoryManager.Instance.Add(Item);
+        Item item = new Item(ItemBase, weaponEnchantment, armorEnchantment);
+
+        InventoryManager.Instance.Add(item);
         Destroy(gameObject);
     }
 
@@ -20,9 +26,9 @@ public class ItemPickUp : MonoBehaviour
         Pickup();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!picked_up)
+        if (!picked_up && collision.collider.CompareTag(PLAYER_TAG))
         {
             picked_up=true;
             Debug.Log("Picked up by player");
@@ -30,4 +36,5 @@ public class ItemPickUp : MonoBehaviour
 
         }
     }
+
 }

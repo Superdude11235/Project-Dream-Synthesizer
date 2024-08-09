@@ -107,9 +107,8 @@ GameObject:
   - component: {fileID: 5422001358253974765}
   - component: {fileID: 2922181170351207969}
   - component: {fileID: 1788827876735304997}
-  - component: {fileID: 5843633353189755630}
   - component: {fileID: 7234889537094263955}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,12 +124,13 @@ Transform:
   m_GameObject: {fileID: 5294089975388528714}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 7, z: 0}
+  m_LocalPosition: {x: 0, y: 5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3951003678269590455}
   - {fileID: 3531216809979536695}
+  - {fileID: 7724546710885017265}
   m_Father: {fileID: 6626356801725107965}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2922181170351207969
@@ -212,13 +212,64 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!70 &5843633353189755630
-CapsuleCollider2D:
+--- !u!114 &7234889537094263955
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5294089975388528714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de2e2d3b30654b4db63a12a9ff1d0d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 1.2
+  isChasing: 0
+  chaseDistance: 5
+  patrolPoints:
+  - {fileID: 2181900228058422280}
+  - {fileID: 7530913469866581821}
+  patrolDestination: 0
+--- !u!1 &5480681658019201911
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7724546710885017265}
+  - component: {fileID: 1682323448359000484}
+  m_Layer: 7
+  m_Name: Collision
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7724546710885017265
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5480681658019201911}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5422001358253974765}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!70 &1682323448359000484
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5480681658019201911}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -247,25 +298,6 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1.9, y: 1.9}
   m_Direction: 0
---- !u!114 &7234889537094263955
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5294089975388528714}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1de2e2d3b30654b4db63a12a9ff1d0d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 1.2
-  isChasing: 0
-  chaseDistance: 5
-  patrolPoints:
-  - {fileID: 2181900228058422280}
-  - {fileID: 7530913469866581821}
-  patrolDestination: 0
 --- !u!1 &7360567594638896520
 GameObject:
   m_ObjectHideFlags: 0
@@ -346,7 +378,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b76f36ec229c0684aaf40a830328fcf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHealth: 2
+  MaxHealth: 1
+  player: {fileID: 0}
+  counter_damage: 1
+  ItemSpawns:
+  - {fileID: 4187315621160637470, guid: a684d9e37bf0e6f49aef8c423c66a02f, type: 3}
+  - {fileID: 2269496903277280886, guid: b719e3a15fa42b44b8a410f82371f31c, type: 3}
 --- !u!1 &9089965610785660087
 GameObject:
   m_ObjectHideFlags: 0
@@ -430,3 +467,4 @@ MonoBehaviour:
   damage: 1
   playerHealth: {fileID: 0}
   playerMovement: {fileID: 0}
+  enemyHurt: {fileID: 897554716508810120}
