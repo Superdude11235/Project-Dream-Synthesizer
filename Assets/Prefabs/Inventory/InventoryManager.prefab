@@ -48,6 +48,7 @@ MonoBehaviour:
   inventorySlotPopulated: []
   ItemContent: {fileID: 0}
   InventoryItem: {fileID: 9217124779986614110, guid: 0cf68e9f7a3170a4ca39882600cbf265, type: 3}
+  indexEquipment: 
   AllItemBases:
   - {fileID: 11400000, guid: 6d0478631c093ba4081a66d80c184291, type: 2}
   - {fileID: 11400000, guid: a7934aa51abd01542a68245df0b26140, type: 2}

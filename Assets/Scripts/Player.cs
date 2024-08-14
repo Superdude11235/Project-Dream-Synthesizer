@@ -172,6 +172,7 @@ public class Player : MonoBehaviour
         spriteScale = sprite.localScale;
         spriteAnimator = sprite.GetComponent<SpriteAnimator>();
         playerHealth = GetComponent<PlayerHealth>();
+        SetArmor(ArmorItem); //this is the line I (Kevin) added to fix the bug about HP being 3 after pressing New Game
 
         //Ignore collision with clouds if player does not have cloud boots
         Physics2D.IgnoreLayerCollision(gameObject.layer, CLOUD_LAYER, !has_cloud_boots);
@@ -507,7 +508,8 @@ public class Player : MonoBehaviour
 
         //Cancels slide;
         is_sliding = false;
-
+        slideHitbox.SetActive(false);
+        
         //Cancel vertical velocity
         rb.velocity = new Vector2(rb.velocity.x, 0);
 
