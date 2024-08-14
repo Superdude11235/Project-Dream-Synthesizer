@@ -7,7 +7,9 @@ using static ItemBase;
 [CreateAssetMenu(fileName ="New Item",menuName ="Item/Create New Item Base")]
 public class ItemBase : ScriptableObject
 {
+    public enum ItemTypes { WEAPON, ARMOR, OTHER}
+
     public string ItemName;
-    public string ItemType;
+    public ItemTypes ItemType;
     public Sprite icon;
 }

@@ -13,8 +13,5 @@ MonoBehaviour:
   m_Name: Cloud Core
   m_EditorClassIdentifier: 
   ItemName: Cloud Core
-  ItemType: 
-  EnchantmentSlot1: 
-  EnchantmentSlot2: 
-  numItems: 1
+  ItemType: 2
   icon: {fileID: 21300000, guid: fc480a2b940c4de4d83e57428d1af90e, type: 3}

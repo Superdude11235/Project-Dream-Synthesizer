@@ -13,6 +13,7 @@ public class InventoryManager : MonoBehaviour, ItemContainerInterface
     public List<GameObject> inventorySlotPopulated = new List<GameObject>();
     public Transform ItemContent;
     public GameObject InventoryItem;
+    public List<int> indexEquipment = new List<int>();
 
     //List of all items
     [SerializeField] private List<ItemBase> AllItemBases = new List<ItemBase>();
@@ -37,10 +38,13 @@ public class InventoryManager : MonoBehaviour, ItemContainerInterface
         }
         else {
             Items.Add(item);
+            if (item.ItemType == ItemBase.ItemTypes.WEAPON || item.ItemType == ItemBase.ItemTypes.ARMOR)
+            {
+                indexEquipment.Add(Items.Count - 1);
+            }
             //Unneccessary code; items by default start with an item count of one, and when they don't, there is a reason (like loading items from save data)
             //int indexAgain = Items.IndexOf(item);
             //Items[indexAgain].numItems = 1;
-
         }   
     
     }

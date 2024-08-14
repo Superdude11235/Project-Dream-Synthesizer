@@ -8,7 +8,6 @@ public class EnemyHurt : MonoBehaviour
     const int WEAPON_LAYER = 8;
     [SerializeField] int MaxHealth = 2;
     [SerializeField] Player player;
-    [SerializeField] int counter_damage = 1;
 
     //Items to spawn
     [SerializeField] List<GameObject> ItemSpawns = new List<GameObject>();

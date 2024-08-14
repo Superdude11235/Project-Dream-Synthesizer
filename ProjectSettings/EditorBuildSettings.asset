@@ -20,5 +20,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/EnemiesTest.unity
     guid: eedcdb269b96d478992939d4df75b768
+  - enabled: 1
+    path: Assets/Scenes/Main Level.unity
+    guid: 63ecdfd747c2d62459f5bd83b4a17af0
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 44ae895dcf41909448f0102c43d6ce9b, type: 2}

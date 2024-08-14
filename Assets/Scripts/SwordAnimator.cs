@@ -10,7 +10,7 @@ public class SwordAnimator : MonoBehaviour
 
     private const string SWORD_IDLE = "SwordIdleTest";
 
-    private SpriteRenderer spriteRenderer;
+    //private SpriteRenderer spriteRenderer;
 
 
     private void Awake()

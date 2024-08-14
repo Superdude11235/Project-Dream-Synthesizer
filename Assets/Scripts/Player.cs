@@ -76,6 +76,7 @@ public class Player : MonoBehaviour
     private Transform sprite;
     private SpriteRenderer spriteRenderer;
     private Vector3 spriteScale;
+    private SpriteAnimator spriteAnimator;
 
     //Tracks which direction is being moved in
     private float moveDirection;
@@ -152,6 +153,10 @@ public class Player : MonoBehaviour
     [Header("Inventory")]
     public InventoryManager Inventory;
 
+    //Animation
+    const string IS_CROUCHING = "IsCrouching";
+
+
     //Debug -- set to true for extra debugging tools
     bool debug = true;
     bool flyMode = false;
@@ -165,6 +170,7 @@ public class Player : MonoBehaviour
         sprite = transform.Find("Sprite");
         spriteRenderer = sprite.GetComponent<SpriteRenderer>();
         spriteScale = sprite.localScale;
+        spriteAnimator = sprite.GetComponent<SpriteAnimator>();
         playerHealth = GetComponent<PlayerHealth>();
 
         //Ignore collision with clouds if player does not have cloud boots
@@ -266,7 +272,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            SceneManager.LoadSceneAsync("PlayerTest");
+            SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
             Debug.Log("Progress loaded. Position: " + transform.position);
         }
 
@@ -340,8 +346,17 @@ public class Player : MonoBehaviour
     private void AnimationHandle()
     {
         //Temporary (hopefully) animation to represent ducking
-        if (is_ducking) sprite.localScale = new Vector3(spriteScale.x, spriteScale.y / 2f, spriteScale.z);
-        else sprite.localScale = new Vector3(spriteScale.x, spriteScale.y, spriteScale.z);
+        //if (is_ducking) sprite.localScale = new Vector3(spriteScale.x, spriteScale.y / 2f, spriteScale.z);
+        //else sprite.localScale = new Vector3(spriteScale.x, spriteScale.y, spriteScale.z);
+        spriteAnimator.SetGrounded(IsGrounded());
+        spriteAnimator.SetMoveSpeed(Mathf.Abs(rb.velocity.x));
+        spriteAnimator.SetJumpSpeed(rb.velocity.y);
+        spriteAnimator.SetCrouching(is_ducking);
+        spriteAnimator.SetHurt(isKnocback());
+        spriteAnimator.SetSliding(is_sliding);
+        GetComponent<Animator>().SetBool(IS_CROUCHING, is_ducking || is_sliding);
+        
+
     }
 
     private void FixedUpdate()
@@ -412,7 +427,7 @@ public class Player : MonoBehaviour
         {
             if (bowTimer > -1f && bowTimer <= 0f)
             {
-                GameObject arrow = Instantiate(Arrow, arrowSpawnPoint);
+                GameObject arrow = Instantiate(Arrow, arrowSpawnPoint.position, Quaternion.identity);
                 arrow.GetComponent<Arrow>().ShootArrow(!IsFlipped());
                 Debug.Log("bow fired!");
             }
@@ -513,6 +528,9 @@ public class Player : MonoBehaviour
         }
         is_jumping = true;
 
+        //Play jump SFX
+        AudioManager.instance.PlaySoundFXClip(AudioManager.instance.Jump, transform);
+
 
     }
 
@@ -549,6 +567,10 @@ public class Player : MonoBehaviour
         //    spriteRenderer.flipX = (moveDirection < 0);
         //    FlipWeapon();
         //}
+
+        //Ignore flip handle if sliding
+        if (is_sliding) return;
+
 
         if ((moveDirection > 0) && IsFlipped()) transform.localScale = new Vector3 (1, 1, 1);
         if (moveDirection < 0 && !IsFlipped()) transform.localScale = new Vector3(-1, 1, 1);
@@ -593,6 +615,7 @@ public class Player : MonoBehaviour
         //Start slide timer
         slideTimer = slideLength;
         slideHitbox.SetActive(true);
+        AudioManager.instance.PlaySoundFXClip(AudioManager.instance.Slide, transform);
     }
 
     private void GroundedHandle()
@@ -600,10 +623,8 @@ public class Player : MonoBehaviour
         if (IsGrounded() && rb.velocity.y <= 0)
         {
             is_jumping = false;
-        }
-        if (IsGrounded())
-        {
             jumpCoyoteTimer = coyoteTime;
+
         }
     }
 
@@ -678,8 +699,11 @@ public class Player : MonoBehaviour
         else LoseCloudBoots();
 
         //Current weapon and armor
-        WeaponItem = data.weaponItem;
-        ArmorItem = data.armorItem;
+        SetWeapon(data.weaponItem);
+        SetArmor(data.armorItem);
+        
+        //Restore health
+        playerHealth.RestoreHealth();
 
     }
 
@@ -714,6 +738,7 @@ public class Player : MonoBehaviour
             rb.AddForce(KBForce, ForceMode2D.Impulse);
 
         }
+        AudioManager.instance.PlaySoundFXClip(AudioManager.instance.PlayerHurt, transform);
         //Debug.Log("knockbackright: " + KnockFromRight);
 
     }
@@ -745,12 +770,24 @@ public class Player : MonoBehaviour
         SaveSystem.DeleteData();
     }
 
+    public void SetEquipment(Item item)
+    {
+        if (item.ItemType == ItemBase.ItemTypes.WEAPON)
+        {
+            SetWeapon(item);
+        }
+        else if (item.ItemType == ItemBase.ItemTypes.ARMOR)
+        {
+            SetArmor(item);
+        }
+    }
+
     public void SetWeapon(Item weaponItem)
     {
         WeaponItem = weaponItem;
-        if (weaponItem.ItemType == "Sword") activeWeapon = Weapon.SWORD;
-        else if (weaponItem.ItemType == "Bow") activeWeapon = Weapon.BOW;
-        else if (weaponItem.ItemType == "Spark") activeWeapon = Weapon.SPARK;
+        if (weaponItem.ItemName == "Sword") activeWeapon = Weapon.SWORD;
+        else if (weaponItem.ItemName == "Bow") activeWeapon = Weapon.BOW;
+        else if (weaponItem.ItemName == "Spark") activeWeapon = Weapon.SPARK;
         else activeWeapon = Weapon.NONE;
         ApplyWeaponEnchantments();
 
@@ -758,8 +795,8 @@ public class Player : MonoBehaviour
 
     public void SetArmor(Item armorItem)
     {
-        if (armorItem.ItemType == "Leather") activeArmor = Armor.LEATHER;
-        else if (armorItem.ItemType == "Iron") activeArmor = Armor.IRON;
+        if (armorItem.ItemName == "Leather Armor") activeArmor = Armor.LEATHER;
+        else if (armorItem.ItemName == "Iron Armor") activeArmor = Armor.IRON;
         ArmorItem = armorItem;
         ApplyArmorEnchantments();
 
@@ -780,7 +817,7 @@ public class Player : MonoBehaviour
         speed_up = (ArmorItem.ArmorEnchantmentSlot == Item.ArmorEnchantment.SPEED_UP);
 
         //Some have instant effects that need to be applied
-        playerHealth.HandleArmorHealth(ArmorItem.ItemType, hp_up);
+        playerHealth.HandleArmorHealth(ArmorItem.ItemName, hp_up);
         currentMaxSpeed = (speed_up) ? maxRunSpeed : maxWalkSpeed;
 
     }
@@ -823,6 +860,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Checkpoint") && interact_pressed_fixed && IsGrounded())
         {
             interact_pressed_fixed = false;
+            playerHealth.RestoreHealth();
             SaveSystem.Save(this, Inventory);
             print("Saved!");
         }

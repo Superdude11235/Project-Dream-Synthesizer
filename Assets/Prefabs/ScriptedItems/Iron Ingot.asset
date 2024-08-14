@@ -13,8 +13,5 @@ MonoBehaviour:
   m_Name: Iron Ingot
   m_EditorClassIdentifier: 
   ItemName: Iron Ingot
-  ItemType: 
-  EnchantmentSlot1: 
-  EnchantmentSlot2: 
-  numItems: 0
+  ItemType: 2
   icon: {fileID: 0}

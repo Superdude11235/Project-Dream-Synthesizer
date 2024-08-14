@@ -9,6 +9,9 @@ public class EnemyDamage : MonoBehaviour
     public Player playerMovement;       // player movement script variable
     public EnemyHurt enemyHurt;
 
+    [SerializeField] int counter_damage = 1;
+
+
     // on collision, call player health's take damage function
     // + do player's knockback effect movement
     private void OnTriggerStay2D(Collider2D collision)
@@ -30,7 +33,7 @@ public class EnemyDamage : MonoBehaviour
                 //Player knockback
                 playerMovement.Knockback();
                 playerHealth.TakeDamage(damage);
-                if (playerMovement.has_counter) enemyHurt.TakeDamage(1);
+                if (playerMovement.has_counter) enemyHurt.TakeDamage(counter_damage);
             }
             
         }

@@ -29,13 +29,10 @@ public class PauseMenu : MonoBehaviour
     // resumes game, when either "p" key or when resume button is pressed
     public void Resume()
     {
-        print("resume");
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1f;
         GameIsPaused = false;
     }
-
-
 
     // main menu button uses the change scene function in button actions
     // + also calls resume to properly set up gameispaused bool and timescale

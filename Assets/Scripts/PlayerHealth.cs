@@ -25,11 +25,18 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private int leather_armor_health = 1;
     [SerializeField] private int iron_armor_health = 2;
 
+    //Game over menu
+    public GameObject gameOverMenuUI;
+    
+    //Health points
+    public GameObject[] healthPoints;
+    public GameObject[] healthPointOutlines;
 
     void Awake()
     {
         health = maxHealth;
         player = GetComponent<Player>();
+        UpdateHealthPoints();
     }
 
     private void OnEnable()
@@ -65,6 +72,7 @@ public class PlayerHealth : MonoBehaviour
         if (IsInvincible()) return;
         iframeTimer = InvincibilityTime;
         health -= damage;
+        UpdateHealthPoints();
         if (health <= 0)
         {
             GameOver();
@@ -73,9 +81,12 @@ public class PlayerHealth : MonoBehaviour
 
     private void GameOver()
     {
+        //Makes game over menu appear
+        gameOverMenuUI.SetActive(true);
+        
         //Temporary; freezes scene
         Debug.Log("Game over!");
-        Time.timeScale = 0;
+        Time.timeScale = 0f;
     }
 
     private void TrackEnemiesKilled()
@@ -99,17 +110,33 @@ public class PlayerHealth : MonoBehaviour
 
     }
 
-    public void HandleArmorHealth(string armorType, bool has_hp_up)
-    {
-        if (armorType == "Leather") maxHealth = baseMaxHealth + leather_armor_health;
-        else if (armorType == "Iron") maxHealth = baseMaxHealth + iron_armor_health;
+    public void HandleArmorHealth(string armorName, bool has_hp_up)
+    {   
+        if (armorName == "Leather Armor") maxHealth = baseMaxHealth + leather_armor_health;
+        else if (armorName == "Iron Armor") maxHealth = baseMaxHealth + iron_armor_health;
         else maxHealth = baseMaxHealth;
         if (has_hp_up) maxHealth++;
         health = Mathf.Min(health, maxHealth);
-
-
+        UpdateHealthPoints();
     }
 
+    public void RestoreHealth()
+    {
+        health = maxHealth;
+        UpdateHealthPoints();
+    }
 
-    
+    public void UpdateHealthPoints()
+    {
+        for (int i = 0; i < maxHealth; i++)
+        {
+            healthPointOutlines[i].SetActive(true);
+            healthPoints[i].SetActive(false);
+        }
+
+        for (int j = 0; j < health; j++)
+        {
+            healthPoints[j].SetActive(true);
+        }
+    }    
 }

@@ -83,7 +83,8 @@ MonoBehaviour:
   MaxHealth: 2
   player: {fileID: 0}
   counter_damage: 1
-  ItemSpawns: []
+  ItemSpawns: [{fileID: 2269496903277280886, guid: b719e3a15fa42b44b8a410f82371f31c,
+      type: 3}]
 --- !u!1 &1658735711788109171
 GameObject:
   m_ObjectHideFlags: 0

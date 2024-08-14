@@ -13,8 +13,9 @@ public class Item
     public enum WeaponEnchantment { DAMAGE_UP, CRIT_CHANCE, HP_DRAIN, NONE};
     public enum ArmorEnchantment { HP_UP, COUNTER, SPEED_UP, NONE};
 
+
     public string ItemName;
-    public string ItemType;
+    public ItemBase.ItemTypes ItemType;
     public WeaponEnchantment WeaponEnchantmentSlot;
     public ArmorEnchantment ArmorEnchantmentSlot;
     public int numItems;
