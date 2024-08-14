@@ -123,6 +123,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxHealth: 2
   player: {fileID: 0}
+  counter_damage: 1
   ItemSpawns: []
 --- !u!1 &4676257125308319403
 GameObject:
@@ -463,6 +464,7 @@ MonoBehaviour:
   damage: 1
   playerHealth: {fileID: 0}
   playerMovement: {fileID: 0}
+  enemyHurt: {fileID: 3477981354962137846}
 --- !u!1 &8526755599531179131
 GameObject:
   m_ObjectHideFlags: 0
