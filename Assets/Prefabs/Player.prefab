@@ -302,10 +302,10 @@ MonoBehaviour:
   maxRunSpeed: 15
   runAccelAmount: 6
   runDeccelAmount: 9
-  jumpForce: 10
+  jumpForce: 13
   jumpCutMultiplier: 0.4
-  cloudJumpForce: 15
-  boxSize: {x: 1.16, y: 0.21}
+  cloudJumpForce: 18
+  boxSize: {x: 0.61, y: 0.21}
   castDistance: 0.88
   groundLayer:
     serializedVersion: 2
@@ -314,7 +314,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   fallGravityMultiplier: 2
-  gravityScale: 1.3
+  gravityScale: 1.8
   maxFallSpeed: -15
   slideForce: 15
   slideLength: 0.3
@@ -345,10 +345,10 @@ MonoBehaviour:
   arrowSpawnPoint: {fileID: 5026911750866314444}
   BowChargeTime: 0.3
   TestArmorItem:
-    ItemName: Iron Armor
+    ItemName: Leather Armor
     ItemType: 1
     WeaponEnchantmentSlot: 0
-    ArmorEnchantmentSlot: 2
+    ArmorEnchantmentSlot: 1
     numItems: 0
   ArmorItem:
     ItemName: Leather Armor
@@ -452,7 +452,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.75, y: 1.74}
+  m_Size: {x: 0.53, y: 1.62}
   m_Direction: 0
 --- !u!61 &4223778488679796197
 BoxCollider2D:
@@ -497,7 +497,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.59, y: 1.72}
+  m_Size: {x: 0.6, y: 1.62}
   m_EdgeRadius: 0
 --- !u!114 &7024391320086549722
 MonoBehaviour:
@@ -730,7 +730,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}

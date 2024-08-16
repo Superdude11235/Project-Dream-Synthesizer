@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fe5c7d04247a0a4abd1b610e2fd2aef, type: 3}
   m_Name: Stick
   m_EditorClassIdentifier: 
-  ItemName: 
-  ItemType: 
-  EnchantmentSlot1: 
-  EnchantmentSlot2: 
-  icon: {fileID: 0}
+  ItemName: Stick
+  ItemType: 2
+  icon: {fileID: 21300000, guid: dbffa4c68472a4c0c92a12967518f735, type: 3}
