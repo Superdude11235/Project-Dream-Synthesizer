@@ -108,6 +108,7 @@ GameObject:
   - component: {fileID: 2922181170351207969}
   - component: {fileID: 1788827876735304997}
   - component: {fileID: 7234889537094263955}
+  - component: {fileID: 7513355147748764878}
   m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
@@ -174,7 +175,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 172b95714458a4a30908cf34f97744a2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0e5a120ca528d49348eb45b03257432c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -231,6 +232,21 @@ MonoBehaviour:
   - {fileID: 2181900228058422280}
   - {fileID: 7530913469866581821}
   patrolDestination: 0
+--- !u!111 &7513355147748764878
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5294089975388528714}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &5480681658019201911
 GameObject:
   m_ObjectHideFlags: 0
@@ -363,9 +379,9 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1.9, y: 1.9}
-  m_Direction: 0
+  m_Offset: {x: 0, y: -0.55}
+  m_Size: {x: 1.11, y: 0.93}
+  m_Direction: 1
 --- !u!114 &897554716508810120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -448,9 +464,9 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1.9, y: 1.9}
-  m_Direction: 0
+  m_Offset: {x: 0, y: -0.55}
+  m_Size: {x: 1.11, y: 0.93}
+  m_Direction: 1
 --- !u!114 &5372191816662818025
 MonoBehaviour:
   m_ObjectHideFlags: 0
