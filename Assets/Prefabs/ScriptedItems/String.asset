@@ -13,8 +13,5 @@ MonoBehaviour:
   m_Name: String
   m_EditorClassIdentifier: 
   ItemName: String
-  ItemType: 
-  EnchantmentSlot1: 
-  EnchantmentSlot2: 
-  numItems: 0
-  icon: {fileID: 0}
+  ItemType: 2
+  icon: {fileID: 21300000, guid: d388ed54025244d34b3eed782123d928, type: 3}

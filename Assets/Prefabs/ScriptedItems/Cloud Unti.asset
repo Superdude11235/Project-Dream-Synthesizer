@@ -13,8 +13,5 @@ MonoBehaviour:
   m_Name: Cloud Unti
   m_EditorClassIdentifier: 
   ItemName: Cloud Unit
-  ItemType: 
-  EnchantmentSlot1: 
-  EnchantmentSlot2: 
-  numItems: 0
-  icon: {fileID: 0}
+  ItemType: 2
+  icon: {fileID: 21300000, guid: bef75c77a015d4738b73b3e2581d382f, type: 3}
