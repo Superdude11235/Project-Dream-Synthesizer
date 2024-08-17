@@ -13,8 +13,5 @@ MonoBehaviour:
   m_Name: Iron Ore
   m_EditorClassIdentifier: 
   ItemName: Iron Ore
-  ItemType: 
-  EnchantmentSlot1: 
-  EnchantmentSlot2: 
-  numItems: 0
-  icon: {fileID: 0}
+  ItemType: 2
+  icon: {fileID: 21300000, guid: a86e88a69bafe4074825e6aa5e65b46d, type: 3}
