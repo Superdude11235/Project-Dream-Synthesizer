@@ -12,9 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fe5c7d04247a0a4abd1b610e2fd2aef, type: 3}
   m_Name: Stone
   m_EditorClassIdentifier: 
-  ItemName: stone
-  ItemType: 
-  EnchantmentSlot1: 
-  EnchantmentSlot2: 
-  numItems: 0
-  icon: {fileID: 0}
+  ItemName: Stone
+  ItemType: 2
+  icon: {fileID: 21300000, guid: 89a06821ac8554019a1ef60a59650d08, type: 3}

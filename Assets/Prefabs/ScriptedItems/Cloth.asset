@@ -13,8 +13,5 @@ MonoBehaviour:
   m_Name: Cloth
   m_EditorClassIdentifier: 
   ItemName: Cloth
-  ItemType: 
-  EnchantmentSlot1: 
-  EnchantmentSlot2: 
-  numItems: 0
-  icon: {fileID: 0}
+  ItemType: 2
+  icon: {fileID: 21300000, guid: 03511f4c4a9344110875dee99508454e, type: 3}

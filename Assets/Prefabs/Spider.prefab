@@ -65,8 +65,8 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.8, y: 1.45}
+  m_Offset: {x: 0, y: -0.81}
+  m_Size: {x: 1.45, y: 1.45}
   m_Direction: 0
 --- !u!114 &6803817062666559585
 MonoBehaviour:
@@ -82,9 +82,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxHealth: 2
   player: {fileID: 0}
-  counter_damage: 1
-  ItemSpawns: [{fileID: 2269496903277280886, guid: b719e3a15fa42b44b8a410f82371f31c,
-      type: 3}]
+  ItemSpawns:
+  - {fileID: 1278364492301875207, guid: a3cb4a385006446e6b4e31dd73cf7b88, type: 3}
 --- !u!1 &1658735711788109171
 GameObject:
   m_ObjectHideFlags: 0
@@ -193,7 +192,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 59c0c51f9d80741e294c2b078a086859, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d31d15397d8ae47f99feafe995a863dd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -296,8 +295,8 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.8, y: 1.45}
+  m_Offset: {x: 0, y: -0.81}
+  m_Size: {x: 1.45, y: 1.45}
   m_Direction: 0
 --- !u!114 &5622518360619290254
 MonoBehaviour:
@@ -315,3 +314,4 @@ MonoBehaviour:
   playerHealth: {fileID: 0}
   playerMovement: {fileID: 0}
   enemyHurt: {fileID: 6803817062666559585}
+  counter_damage: 1
