@@ -12,6 +12,12 @@ public class SpriteAnimator : MonoBehaviour
     private const string IS_SLIDING = "IsSliding";
     private const string IS_HURT = "IsHurt";
     private const string IS_CROUCHING = "IsCrouching";
+    private const string IS_DYING = "IsDying";
+    private const string SWORD_SWUNG = "SwordSwung";
+    private const string SWORD_SWINGING = "SwordSwinging";
+    private const string BOW_CHARGING = "BowCharging";
+    private const string BOW_START_CHARGE = "BowStartCharge";
+
 
     private void Awake()
     {
@@ -47,4 +53,41 @@ public class SpriteAnimator : MonoBehaviour
     {
         animator.SetBool(IS_HURT, is_hurt);
     }
+
+    public void SetDying(bool is_dying)
+    {
+        animator.SetBool(IS_DYING, is_dying);
+    }
+
+    public void SwingSword()
+    {
+        animator.SetTrigger(SWORD_SWUNG);
+        SwordSwinging(true);
+    }
+
+    public void SwordSwinging(bool is_swing)
+    {
+        animator.SetBool(SWORD_SWINGING, is_swing);
+    }
+
+    public void SetBowCharging(bool is_charging)
+    {
+        animator.SetBool(BOW_CHARGING, is_charging);
+    }
+
+    public void BowStartCharge()
+    {
+        animator.SetTrigger(BOW_START_CHARGE);
+    }
+
+    private void GameOver()
+    {
+        Events.GameOver();
+    }
+
+
+    //public void StartDying()
+    //{
+    //    animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+    //}
 }

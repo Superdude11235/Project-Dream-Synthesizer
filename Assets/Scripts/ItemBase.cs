@@ -8,8 +8,8 @@ using static ItemBase;
 public class ItemBase : ScriptableObject
 {
     public enum ItemTypes { WEAPON, ARMOR, OTHER}
-
     public string ItemName;
     public ItemTypes ItemType;
     public Sprite icon;
+
 }

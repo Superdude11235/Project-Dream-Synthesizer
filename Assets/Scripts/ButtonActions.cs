@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SearchService;
+//using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class ButtonActions : MonoBehaviour
 {   
-    [SerializeField] private const int MAIN_SCENE_ID = 3;
+    [SerializeField] private const int MAIN_SCENE_ID = 1;
     // changes to scene with int sceneID (shown in file -> build settings)
     public void MoveToScene(int sceneID)
     {

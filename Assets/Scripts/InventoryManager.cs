@@ -1,8 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor;
+using Unity.VisualScripting;
+//using UnityEditor;
+//using UnityEditor.Build.Content;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour, ItemContainerInterface
@@ -13,18 +17,112 @@ public class InventoryManager : MonoBehaviour, ItemContainerInterface
     public List<GameObject> inventorySlotPopulated = new List<GameObject>();
     public Transform ItemContent;
     public GameObject InventoryItem;
-    public List<int> indexEquipment = new List<int>();
+    public GameObject InventoryMenuUI;
+    public static bool EquipIsOpen = false;
 
     //List of all items
     [SerializeField] private List<ItemBase> AllItemBases = new List<ItemBase>();
+    int countControllers;
     public InventoryItemController[] InventoryItems;
 
     //for managing the selected items -> suggestion: add a green check mark button for adding it to the selected list, and a red x for remove
     public List<Item> selectedItemsForRecipe = new List<Item>();
 
+    //For equipment inventory
+    public List<Item> EquipmentItems = new List<Item>();
+    public delegate void OnEquipChanged();
+    public OnEquipChanged onEquipChangedCallback;
+
+    //Inventory Scene
+    private const int INVENTORY_SCENE_INDEX = 2;
+    private const int MAIN_LEVEL_SCENE_INDEX = 1;
+
+    //adding a few test items
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+       
+
+        //bow recipe, string stick bubble water
+        //Item.WeaponEnchantment weaponEnchantment = Item.GetRandomWeaponEnchantment();
+        //Item.ArmorEnchantment armorEnchantment = Item.GetRandomArmorEnchantment();
+
+        //ItemBase ItemBase1 = new ItemBase();
+        //ItemBase ItemBase2 = new ItemBase();
+        //ItemBase ItemBase3 = new ItemBase();
+        ////ItemBase ItemBase4 = new ItemBase();
+        //ItemBase1.ItemName = "Bubble Water";
+        //ItemBase2.ItemName = "Stick";
+        //ItemBase3.ItemName = "String";
+        ////ItemBase4.ItemName = "String";
+        //ItemBase1.ItemType = ItemBase.ItemTypes.OTHER;
+        //ItemBase2.ItemType = ItemBase.ItemTypes.OTHER;
+        //ItemBase3.ItemType = ItemBase.ItemTypes.OTHER;
+        //// ItemBase4.ItemType = ItemBase.ItemTypes.OTHER;
+
+        //Item itemTest1 = new Item(ItemBase1, weaponEnchantment, armorEnchantment);
+        //Item itemTest2 = new Item(ItemBase2, weaponEnchantment, armorEnchantment);
+        //Item itemTest3 = new Item(ItemBase3, weaponEnchantment, armorEnchantment);
+        //Item itemTest4 = new Item(ItemBase3, weaponEnchantment, armorEnchantment);
+
+
+
+        //Items.Add(itemTest1);
+        //Items.Add(itemTest2);
+        //Items.Add(itemTest3);
+        //Items.Add(itemTest3);
+        //Items.Add(itemTest3);
+        //Items.Add(itemTest3);
+        //Items.Add(itemTest3);
+        //Items.Add(itemTest3);
+        //Items.Add(itemTest3);
+
+
+    }
+
+    
+
+    //private void AssignInventoryVariables(Scene scene, LoadSceneMode mode)
+    //{
+    //    InventoryMenuUI = GameObject.Find("InventorySystem/Inventory");
+    //    ItemContent = GameObject.Find("InventorySystem/Inventory/Scroll View/Viewport/Content").transform;
+    //}
+
+
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.I) && SceneManager.GetActiveScene().buildIndex != INVENTORY_SCENE_INDEX)
+        {
+            if (EquipIsOpen)
+            {
+                InventoryMenuUI.SetActive(false);
+                EquipIsOpen = false;
+            }
+            else
+            {
+                InventoryMenuUI.SetActive(true);
+                ListItems(false);
+                EquipIsOpen = true;
+            }
+        }
+
+        if ((Input.GetKeyDown(KeyCode.C) && SceneManager.GetActiveScene().buildIndex == INVENTORY_SCENE_INDEX)){
+            SaveSystem.SaveInventory(this);
+            SceneManager.LoadSceneAsync(MAIN_LEVEL_SCENE_INDEX);
+        }
+
+    }
+
+
+    private void OnEnable()
+    {
+        Events.Loadprogress += LoadItems;
     }
 
     public void Add(Item item) {
@@ -38,15 +136,18 @@ public class InventoryManager : MonoBehaviour, ItemContainerInterface
         }
         else {
             Items.Add(item);
-            if (item.ItemType == ItemBase.ItemTypes.WEAPON || item.ItemType == ItemBase.ItemTypes.ARMOR)
+
+            if (item.ItemName == "Cloud Boots") Events.GetCloudBoots();
+            if (item.ItemType != ItemBase.ItemTypes.OTHER)
             {
-                indexEquipment.Add(Items.Count - 1);
+                EquipmentItems.Add(item);
+                
+                if (onEquipChangedCallback != null)
+                {
+                    onEquipChangedCallback.Invoke();
+                }
             }
-            //Unneccessary code; items by default start with an item count of one, and when they don't, there is a reason (like loading items from save data)
-            //int indexAgain = Items.IndexOf(item);
-            //Items[indexAgain].numItems = 1;
-        }   
-    
+        }
     }
 
     //only removes 1 at a time. 
@@ -54,6 +155,16 @@ public class InventoryManager : MonoBehaviour, ItemContainerInterface
     {
         //remove an item from inventory
         int index = IndexOf(item);
+
+        //check if item is equipment
+        bool itemIsEquip = false;
+        foreach (var i in EquipmentItems)
+        {
+            if (item.Equals(i))
+            {
+                itemIsEquip = true;
+            }
+        }
 
         //if already in inventory and more than 1 then remove the item 
         if (index != -1 && Items[index].numItems > 1)
@@ -64,12 +175,30 @@ public class InventoryManager : MonoBehaviour, ItemContainerInterface
         else
         {
             Items.Remove(item);
-            InventoryItems[index].RemoveItem();
+            if (itemIsEquip)
+            {
+                EquipmentItems.Remove(item);
+            }
 
+            //need to remove the associated InventoryItemController 
+            // need to remove it from the Transform
+
+
+        }
+
+        if (itemIsEquip && onEquipChangedCallback != null)
+        {
+            onEquipChangedCallback.Invoke();
         }
     }
 
-    private int IndexOf(Item item)
+    private void OnDisable()
+    {
+        Events.Loadprogress -= LoadItems;
+
+    }
+
+    public int IndexOf(Item item)
     {
         for (int i = 0; i < Items.Count; i++) 
         {
@@ -78,29 +207,84 @@ public class InventoryManager : MonoBehaviour, ItemContainerInterface
             return -1;
     }
 
-    public void ListItems()
+    //this is for finding the item in the selected items list
+    //had to create a seperate one since using ItemBase for the crafting recipe
+    private int IndexOfForSelection(string itemName)
     {
-
-       foreach (Transform item in ItemContent)
+        for (int i = 0; i < selectedItemsForRecipe.Count; i++)
         {
-            Destroy(item.gameObject);
-       }
+            if (itemName.Equals(selectedItemsForRecipe[i].ItemName)) return i;
+        }
+        return -1;
+    }
+
+
+    private int IndexOfBase(Item item) {
+
+        for (int i = 0; i < AllItemBases.Count; i++) {
+
+            if (item.ItemName.Equals(AllItemBases[i].ItemName)) return i;
+        
+        }
+        return -1;
+    
+    }
+
+
+    public void ListItems(bool flagForButtons)
+    {
+       // inventorySlotPopulated.Clear();
+
+        if (InventoryItems.Length != 0) {
+            Array.Clear(InventoryItems, 0, countControllers);
+        }
+        Debug.Log("Child Coutn for the Transform Before Load" + ItemContent.childCount);
+        foreach (Transform child in ItemContent) {
+
+            Destroy(child.gameObject);
+           
+        }
+
+        while (ItemContent.childCount != 0) {
+
+            Instance.ItemContent.GetChild(0).transform.parent = null;
+        }
+
+        Debug.Log("Child Coutn for the Transform After Load" + ItemContent.childCount);
 
         //lists the items in the inventory
         foreach (var item in Items)
-        {
+        {           
+
             //populate the inventory slots with name and image 
             GameObject obj = Instantiate(InventoryItem, ItemContent);
             var itemName = obj.transform.Find("ItemName").GetComponent<Text>();
             var itemIcon = obj.transform.Find("Image").GetComponent<Image>();  
+            //get the buttons for adding and removing the items from selected list 
+            var removeFromSelectionButton = obj.transform.Find("RemoveFromSelectionButton").GetComponent<Button>();
+            var addToSelectionButton = obj.transform.Find("AddToSelectionButton").GetComponent<Button>();
 
-            //Debug.Log(obj.transform.Find("ItemName"));
             itemName.text = item.ItemName + "(" +item.numItems+ ")";
-
             itemIcon.sprite = item.icon;
+
+            //if flag = true set them to active
+            if (flagForButtons)
+            {
+                removeFromSelectionButton.gameObject.SetActive(true);
+                addToSelectionButton.gameObject.SetActive(true);
+
+            }
+
+
+            //else set them to inactive 
+
+            else {
+                removeFromSelectionButton.gameObject.SetActive(false);
+                addToSelectionButton.gameObject.SetActive(false);
+            }
+
             //save the inventory slot so can be interaccted with 
             inventorySlotPopulated.Add(obj);
-
         }
         SetInventoryItems();
 
@@ -115,12 +299,11 @@ public class InventoryManager : MonoBehaviour, ItemContainerInterface
     //create inventoryItemControllers for every item in the inventory for all the extra stuff. 
     public void SetInventoryItems() {
 
-        InventoryItems = ItemContent.GetComponentsInChildren < InventoryItemController >();
-
+        countControllers = 0;
+        InventoryItems = ItemContent.GetComponentsInChildren< InventoryItemController >();
         for (int i = 0; i < Items.Count; i++) {
-
             InventoryItems[i].AddItemInventoryController(Items[i]);
-
+            countControllers++;
         }
     
     }
@@ -144,9 +327,9 @@ public class InventoryManager : MonoBehaviour, ItemContainerInterface
     //note: below is for selecting the item for crafting and adding it to a separate list. Stacking is not implemented for this list. 
     //add the item to the selected item for crafting list 
     public void selectItemForCraftingAddsOnlyOne(Item item) {
-        var tempItem = item;
+        Item tempItem = item;
         tempItem.numItems = 1;
-        selectedItemsForRecipe.Add(tempItem);
+        selectedItemsForRecipe.Add(item);
 
     }
 
@@ -160,12 +343,12 @@ public class InventoryManager : MonoBehaviour, ItemContainerInterface
     //go through the list of selected items, and check to see if enough of the requested item has been selected
     // if enough has been selected -> true
     //else -> false 
-    public bool findIfHaveEnough(Item itemNeeded, int amountNeeded) {
+    public bool findIfHaveEnough(string itemNeeded, int amountNeeded) {
 
         int count = 0; 
         foreach (Item item in selectedItemsForRecipe) {
 
-            if (itemNeeded.ItemName.Equals(item.ItemName)) {
+            if (itemNeeded.Equals(item.ItemName)) {
 
                 count++;
             
@@ -178,10 +361,11 @@ public class InventoryManager : MonoBehaviour, ItemContainerInterface
     //find and remove the selected items from the list of selected items upon successful crafting
     //returns item so can call the RemoveItem function in the InventoryItemController.
     //assign an InventoryItemController to every item that is made 
-   public Item findSpecificItemForRemovalCrafting(Item item) { 
+   public Item findSpecificItemForRemovalCrafting(string itemName) { 
     
         //remove from the selected list 
-        int index = selectedItemsForRecipe.IndexOf(item);
+
+        int index = IndexOfForSelection(itemName);
 
         Item tempOneToRemove = selectedItemsForRecipe[index];
 
@@ -191,8 +375,10 @@ public class InventoryManager : MonoBehaviour, ItemContainerInterface
 
     }
 
-    public void LoadItems(SaveData data)
+    public void LoadItems()
     {
+        SaveData data = SaveSystem.LoadInventoryData();
+
         resetInventory();
         for (int i = 0; i < data.itemNames.Length; i++)
         {
@@ -205,7 +391,7 @@ public class InventoryManager : MonoBehaviour, ItemContainerInterface
                     break;
                 }
             }
-            if (temp != null) Items.Add(temp);
+            if (temp != null) Add(temp);
         }
     }
 

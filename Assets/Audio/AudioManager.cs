@@ -12,6 +12,19 @@ public class AudioManager : MonoBehaviour
     public AudioClip Jump;
     public AudioClip Slide;
     public AudioClip PlayerHurt;
+    public AudioClip BowCharge;
+    public AudioClip BowFire;
+    public AudioClip Sword;
+    public AudioClip ItemPickup;
+    public AudioClip Checkpoint;
+    public AudioClip Death;
+    public AudioClip Enemyhurt;
+
+    //Background music
+    public AudioSource Background;
+
+
+
 
   
 
@@ -31,5 +44,9 @@ public class AudioManager : MonoBehaviour
 
         float clipLength = audioSource.clip.length;
         Destroy(audioSource.gameObject, clipLength);
+    }
+    public void StopBackground()
+    {
+        Background.Stop();
     }
 }

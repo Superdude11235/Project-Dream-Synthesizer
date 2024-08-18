@@ -399,6 +399,9 @@ MonoBehaviour:
   ItemSpawns:
   - {fileID: 750303345633734521, guid: 1e5a5c305a8a74045a8916e0df8fa1fb, type: 3}
   - {fileID: 2269496903277280886, guid: b719e3a15fa42b44b8a410f82371f31c, type: 3}
+  - {fileID: 8884135098311152794, guid: 995ad210f407f4e829873f4fb349a717, type: 3}
+  - {fileID: 8205546075837259275, guid: 66dd7d739a44045aba83edee652d639e, type: 3}
+  - {fileID: 8106306325260936000, guid: 4c32e9e91a314495c8807ddccd1d7696, type: 3}
 --- !u!1 &9089965610785660087
 GameObject:
   m_ObjectHideFlags: 0

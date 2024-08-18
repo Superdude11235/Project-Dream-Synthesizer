@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59c1e1ecd9727494ca024a01631aec67, type: 3}
   m_Name: IronIngotRecipe
   m_EditorClassIdentifier: 
+  recipeName: Iron Ingot
+  recipeID: 0
   Materials:
-  - Item: {fileID: 11400000, guid: 463f39e6f1a0b1945ba29cb558228382, type: 2}
+  - ItemB: {fileID: 11400000, guid: 463f39e6f1a0b1945ba29cb558228382, type: 2}
     Amount: 2
   Results:
-  - Item: {fileID: 11400000, guid: 8958c3d8cbe3bee4d944afa7493cbe15, type: 2}
-    Amount: 1
+  - {fileID: 11400000, guid: 8958c3d8cbe3bee4d944afa7493cbe15, type: 2}

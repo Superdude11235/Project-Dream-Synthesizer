@@ -5,34 +5,41 @@ using UnityEngine.UI;
 
 public class InventoryItemController : MonoBehaviour
 {
-
-    Item item;
-    //public Button removeFromSelectionForCrafting;
-   // public Button addToSelectionForCrafting;
-
+    public Item item;
+    static int counter;
+   // Button removeFromSelectedList;
+    
 
     public void RemoveItem() {
-
+        counter--;
         InventoryManager.Instance.RemoveItem(item);
         Destroy(gameObject);
 
     }
 
     public void AddItemInventoryController(Item newItem) {
-
         item = newItem;
+        counter++;
     
     }
 
-    // Start is called before the first frame update
-  //  void Start()
-    //{
-        
-    //}
+    //for crafting section
+    //add the item to SelectedItem List 
+    public void addItemToSelectedListForCrafting()
+    {
+        InventoryManager.Instance.selectItemForCraftingAddsOnlyOne(item);
+    }
 
-    // Update is called once per frame
-    //void Update()
-    //{
-        
-    //}
+    //remove the item from the SelectedItem List for crafting=
+
+    public void removeFromSelectedListForCrafting() {
+
+        var tempItem = item;
+        tempItem.numItems = 1;
+        InventoryManager.Instance.removeItemForCrafting(tempItem);
+
+    }
+
+
+
 }

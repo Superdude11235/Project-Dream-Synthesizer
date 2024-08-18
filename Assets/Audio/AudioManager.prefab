@@ -45,6 +45,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundFXObject: {fileID: 6321073642289900785, guid: 5f916c9af32c82c449ca1e4d2a3d1626, type: 3}
-  Jump: {fileID: 8300000, guid: 092d15de3a245764e908e2dbe549dc0b, type: 3}
-  Slide: {fileID: 8300000, guid: d736eaa1af75f2b4b9dc39ce53103952, type: 3}
-  PlayerHurt: {fileID: 8300000, guid: db5a44e56964e8149986c65e271d00e3, type: 3}
+  Jump: {fileID: 8300000, guid: 22c4114cbff5ef54f9e900d967cd9d94, type: 3}
+  Slide: {fileID: 8300000, guid: 6d597052e712ff34988e0937eacbfd26, type: 3}
+  PlayerHurt: {fileID: 8300000, guid: 4b5442c6c0f3a9740a18e50b68547cd9, type: 3}
+  BowCharge: {fileID: 8300000, guid: 69c7d51a83fddbe4897779a3aa2437bf, type: 3}
+  BowFire: {fileID: 8300000, guid: 8fa6df5e14af2834da69f30235dbc277, type: 3}
+  Sword: {fileID: 8300000, guid: 1f35fbdc20ce4e242893cac740adfec7, type: 3}
+  ItemPickup: {fileID: 8300000, guid: 21590bdfb1f40474d9712b7c22060398, type: 3}
+  Checkpoint: {fileID: 8300000, guid: c064aa6797e2ac84c8ed3387042edc39, type: 3}
+  Death: {fileID: 8300000, guid: de078608e97ac4cdda48cd317a8557b6, type: 3}
+  Enemyhurt: {fileID: 8300000, guid: 3e4fe25a8c5eb2d4cb872610e1351a46, type: 3}
+  Background: {fileID: 0}

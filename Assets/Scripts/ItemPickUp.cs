@@ -8,23 +8,35 @@ public class ItemPickUp : MonoBehaviour
 
     public ItemBase ItemBase;
 
+    private SpriteRenderer spriteRenderer;
+
     const string PLAYER_TAG = "Player";
+
+    private void Awake()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (ItemBase.icon != null)
+        {
+            spriteRenderer.sprite = ItemBase.icon;
+        }
+    }
 
     void Pickup() {
         Item.WeaponEnchantment weaponEnchantment = Item.GetRandomWeaponEnchantment();
-        Item.ArmorEnchantment armorEnchantment = Item.GetRandomArmorEnchantment(); ;
+        Item.ArmorEnchantment armorEnchantment = Item.GetRandomArmorEnchantment();
 
         Item item = new Item(ItemBase, weaponEnchantment, armorEnchantment);
 
         InventoryManager.Instance.Add(item);
+        AudioManager.instance.PlaySoundFXClip(AudioManager.instance.ItemPickup, transform);
         Destroy(gameObject);
     }
 
-    private void OnMouseDown()
-    {
-        Debug.Log("clicked");
-        Pickup();
-    }
+    //private void OnMouseDown()
+    //{
+    //    Debug.Log("clicked");
+    //    Pickup();
+    //}
 
     private void OnCollisionEnter2D(Collision2D collision)
     {

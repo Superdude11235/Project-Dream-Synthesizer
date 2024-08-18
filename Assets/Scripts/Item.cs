@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Progress;
+//using static UnityEditor.Progress;
 
 //Class to store individual items
 
@@ -21,6 +21,16 @@ public class Item
     public int numItems;
     [NonSerialized] public Sprite icon;
 
+
+    public Item(ItemBase itemBase)
+    {
+        ItemName = itemBase.ItemName;
+        ItemType = itemBase.ItemType;
+        icon = itemBase.icon;
+        this.WeaponEnchantmentSlot = WeaponEnchantment.NONE;
+        this.ArmorEnchantmentSlot = ArmorEnchantment.NONE;
+        numItems = 1;
+    }
     public Item(ItemBase itemBase, WeaponEnchantment WeaponEnchantmentSlot, ArmorEnchantment ArmorEnchantmentSlot)
     {
         ItemName = itemBase.ItemName;
@@ -55,11 +65,11 @@ public class Item
 
     public bool Equals(Item item)
     {
-        return (item.ItemName == this.ItemName && item.WeaponEnchantmentSlot == this.WeaponEnchantmentSlot && item.ArmorEnchantmentSlot == this.ArmorEnchantmentSlot);
+        return (item.ItemName.Equals(this.ItemName) && item.WeaponEnchantmentSlot == this.WeaponEnchantmentSlot && item.ArmorEnchantmentSlot == this.ArmorEnchantmentSlot);
     }
 
     public static bool Equals(Item item1, Item item2)
     {
-        return (item1.ItemName == item2.ItemName && item1.WeaponEnchantmentSlot == item2.WeaponEnchantmentSlot && item1.ArmorEnchantmentSlot == item2.ArmorEnchantmentSlot);
+        return (item1.ItemName.Equals(item2.ItemName) && item1.WeaponEnchantmentSlot == item2.WeaponEnchantmentSlot && item1.ArmorEnchantmentSlot == item2.ArmorEnchantmentSlot);
     }
 }

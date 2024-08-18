@@ -106,9 +106,9 @@ Transform:
   m_GameObject: {fileID: 3439268479078550664}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.85, y: -0.06, z: 0}
-  m_LocalScale: {x: 10.45, y: 10.45, z: 10.45}
-  m_ConstrainProportionsScale: 1
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2674299713060644250}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -196,7 +196,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.88206553, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0.049999997, y: 0.049999997, z: 0.049999997, w: 0.049999997}
     pivot: {x: 0.5, y: 0.5}
@@ -207,7 +207,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.16, y: 0.16}
+  m_Size: {x: 1.304131, y: 1.68}
   m_EdgeRadius: 0
 --- !u!95 &5288528884006855377
 Animator:
@@ -336,8 +336,8 @@ MonoBehaviour:
   WeaponItem:
     ItemName: 
     ItemType: 0
-    WeaponEnchantmentSlot: 0
-    ArmorEnchantmentSlot: 0
+    WeaponEnchantmentSlot: 3
+    ArmorEnchantmentSlot: 3
     numItems: 0
   swordAnimator: {fileID: 1229759901832047217}
   slideHitbox: {fileID: 512438779083024075}
@@ -351,10 +351,10 @@ MonoBehaviour:
     ArmorEnchantmentSlot: 1
     numItems: 0
   ArmorItem:
-    ItemName: Leather Armor
+    ItemName: 
     ItemType: 1
     WeaponEnchantmentSlot: 3
-    ArmorEnchantmentSlot: 0
+    ArmorEnchantmentSlot: 3
     numItems: 0
   Inventory: {fileID: 0}
 --- !u!114 &2730122226313644657
@@ -624,7 +624,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 5f567be31bd4b2342960db64b14d6468, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

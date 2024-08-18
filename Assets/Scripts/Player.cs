@@ -65,6 +65,7 @@ public class Player : MonoBehaviour
     private InputAction attack;
     private InputAction duck;
     private InputAction interact;
+    private InputAction openCrafting;
     
     //Rigidbody2D reference
     private Rigidbody2D rb;
@@ -97,9 +98,12 @@ public class Player : MonoBehaviour
     bool jump_released = false;
     bool attack_released = false;
     bool is_on_cloud = false;
+    bool is_dying = false;
     public bool has_cloud_boots { get; private set; } = false;
     bool interact_pressed = false;
     bool interact_pressed_fixed = false;
+    bool crafting_pressed = false;
+    bool crafting_pressed_fixed = false;
 
     //Enchantment trackers
     bool damage_up = false;
@@ -146,19 +150,22 @@ public class Player : MonoBehaviour
     [SerializeField] private Item TestArmorItem;
     public Item ArmorItem;
     Armor activeArmor = Armor.NONE;
-    
+
 
 
     //Inventory reference
     [Header("Inventory")]
-    public InventoryManager Inventory;
+    public InventoryManager Inventory = InventoryManager.Instance;
 
     //Animation
     const string IS_CROUCHING = "IsCrouching";
 
+    //Scene
+    private const int INVENTORY_SCENE_INDEX = 2;
+
 
     //Debug -- set to true for extra debugging tools
-    bool debug = true;
+    bool debug = false;
     bool flyMode = false;
     #endregion Variables
 
@@ -174,6 +181,9 @@ public class Player : MonoBehaviour
         playerHealth = GetComponent<PlayerHealth>();
         SetArmor(ArmorItem); //this is the line I (Kevin) added to fix the bug about HP being 3 after pressing New Game
 
+        //Equip current armor (fixes bug)
+        //SetArmor(ArmorItem);
+
         //Ignore collision with clouds if player does not have cloud boots
         Physics2D.IgnoreLayerCollision(gameObject.layer, CLOUD_LAYER, !has_cloud_boots);
     }
@@ -187,23 +197,27 @@ public class Player : MonoBehaviour
         attack = playerControls.Player.Attack;
         duck = playerControls.Player.Duck;
         interact = playerControls.Player.Interact;
+        openCrafting = playerControls.Player.OpenCrafting;
         playerControls.Enable();
 
         //Subscribe load data to event
         Events.Loadprogress += LoadPlayer;
-       
+        Events.Getcloudboots += GetCloudBoots;
+
     }
 
     private void OnDisable()
     {
        playerControls.Disable();
+
         Events.Loadprogress -= LoadPlayer;
+        Events.Getcloudboots -= GetCloudBoots;
+
     }
 
     private void Update()
     {
         moveDirection = (!is_ducking) ? move.ReadValue<float>() : 0f;
-        FlipHandle();
         JumpCheck();
         RunCheck();
         DuckCheck();
@@ -342,6 +356,7 @@ public class Player : MonoBehaviour
     private void InteractCheck()
     {
         if (interact.triggered) interact_pressed = true;
+        if (openCrafting.triggered) crafting_pressed = true;
     }
 
     private void AnimationHandle()
@@ -349,12 +364,14 @@ public class Player : MonoBehaviour
         //Temporary (hopefully) animation to represent ducking
         //if (is_ducking) sprite.localScale = new Vector3(spriteScale.x, spriteScale.y / 2f, spriteScale.z);
         //else sprite.localScale = new Vector3(spriteScale.x, spriteScale.y, spriteScale.z);
-        spriteAnimator.SetGrounded(IsGrounded());
+        spriteAnimator.SetGrounded(IsGrounded() || CanCloudJump());
         spriteAnimator.SetMoveSpeed(Mathf.Abs(rb.velocity.x));
         spriteAnimator.SetJumpSpeed(rb.velocity.y);
         spriteAnimator.SetCrouching(is_ducking);
         spriteAnimator.SetHurt(isKnocback());
         spriteAnimator.SetSliding(is_sliding);
+        spriteAnimator.SetDying(is_dying);
+        spriteAnimator.SetBowCharging(IsBowCharging());
         GetComponent<Animator>().SetBool(IS_CROUCHING, is_ducking || is_sliding);
         
 
@@ -362,7 +379,9 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-
+        //ignore all controls if dying
+        if (is_dying) return;
+            MoveHandle();
             MoveHandle();
             JumpHandle();
             jump_pressed = false;
@@ -376,14 +395,18 @@ public class Player : MonoBehaviour
             JumpReleaseHandle();
             jump_released = false;
             KnockbackHandle();
-        InteractHandle();
+            InteractHandle();
             interact_pressed = false;
+            crafting_pressed = false;
+            FlipHandle();
+
     }
 
     private void InteractHandle()
     {
         //Causes bugs without this extra function...
         interact_pressed_fixed = interact_pressed;
+        crafting_pressed_fixed = crafting_pressed;
     }
 
     private void KnockbackHandle()
@@ -430,6 +453,7 @@ public class Player : MonoBehaviour
             {
                 GameObject arrow = Instantiate(Arrow, arrowSpawnPoint.position, Quaternion.identity);
                 arrow.GetComponent<Arrow>().ShootArrow(!IsFlipped());
+                AudioManager.instance.PlaySoundFXClip(AudioManager.instance.BowFire, transform);
                 Debug.Log("bow fired!");
             }
         }
@@ -445,6 +469,7 @@ public class Player : MonoBehaviour
                 return;
             case Weapon.SWORD:
                 swordAnimator.SwingSword();
+                spriteAnimator.SwingSword();
                 break;
             case Weapon.BOW:
                 BowStartCharge();
@@ -457,7 +482,9 @@ public class Player : MonoBehaviour
     private void BowStartCharge()
     {
         bowTimer = BowChargeTime;
+        AudioManager.instance.PlaySoundFXClip(AudioManager.instance.BowCharge, transform);
         Debug.Log("Bow begin charge. Charge time: " + BowChargeTime);
+        spriteAnimator.BowStartCharge();
     }
     private void MoveHandle()
     {
@@ -495,7 +522,7 @@ public class Player : MonoBehaviour
 
         //Check if player is grounded and can jump, or if they were recently on ground and can do coyote jump, or can do cloud jump
         if (!IsGrounded() && !CanCloudJump() && !jumpCoyoted() && !flyMode) return;
-        
+
 
         //Reset jump buffer and coyote time
         jumpBufferTimer = -1f;
@@ -509,7 +536,7 @@ public class Player : MonoBehaviour
         //Cancels slide;
         is_sliding = false;
         slideHitbox.SetActive(false);
-        
+
         //Cancel vertical velocity
         rb.velocity = new Vector2(rb.velocity.x, 0);
 
@@ -536,7 +563,7 @@ public class Player : MonoBehaviour
 
     }
 
-    private bool IsGrounded()
+    public bool IsGrounded()
     {
         //Boxcasts below player to detect ground
         return (Physics2D.BoxCast(transform.position, boxSize, 0, Vector3.down, castDistance, groundLayer));
@@ -570,8 +597,11 @@ public class Player : MonoBehaviour
         //    FlipWeapon();
         //}
 
-        //Ignore flip handle if sliding
-        if (is_sliding) return;
+        //Ignore flip handle if sliding or dying
+        if (is_sliding || is_dying) return;
+
+        //return if swinging sword
+        if (swordAnimator.IsSwingingSword()) return;
 
 
         if ((moveDirection > 0) && IsFlipped()) transform.localScale = new Vector3 (1, 1, 1);
@@ -683,11 +713,16 @@ public class Player : MonoBehaviour
     {
         //SceneManager.LoadSceneAdsync("PlayerTest");
 
-        SaveData data = SaveSystem.LoadData();
-        Inventory.LoadItems(data);
+        SaveData data = SaveSystem.LoadPlayerData();
 
 
-        if (data == null) return;
+        if (data == null)
+        {
+            //Set current weapon and armor in case they're already defined by editor
+            if (WeaponItem != null) SetWeapon(WeaponItem);
+            if (ArmorItem != null) SetArmor(ArmorItem);
+            return;
+        }
         //Load position
         Vector3 position;
         position.x = data.position[0];
@@ -727,6 +762,7 @@ public class Player : MonoBehaviour
 
     public void Knockback()
     {
+        if (is_dying) return;
         KBCounter = KBTotalTime;
         rb.velocity = Vector2.zero;
         if (KnockFromRight)
@@ -740,7 +776,6 @@ public class Player : MonoBehaviour
             rb.AddForce(KBForce, ForceMode2D.Impulse);
 
         }
-        AudioManager.instance.PlaySoundFXClip(AudioManager.instance.PlayerHurt, transform);
         //Debug.Log("knockbackright: " + KnockFromRight);
 
     }
@@ -776,11 +811,41 @@ public class Player : MonoBehaviour
     {
         if (item.ItemType == ItemBase.ItemTypes.WEAPON)
         {
+            if (activeWeapon != Weapon.NONE)
+            {
+                Unequip(WeaponItem);
+            }
             SetWeapon(item);
         }
         else if (item.ItemType == ItemBase.ItemTypes.ARMOR)
         {
+            if (activeArmor != Armor.NONE)
+            {
+                Unequip(ArmorItem);
+            }
             SetArmor(item);
+        }
+    }
+
+    public void Unequip(Item item)
+    {
+        if (item.ItemType == ItemBase.ItemTypes.WEAPON)
+        {
+            WeaponItem = null;
+            activeWeapon = Weapon.NONE;
+            damage_up = false;
+            has_crit_chance = false;
+            has_hp_drain = false;
+        }
+        else if (item.ItemType == ItemBase.ItemTypes.ARMOR)
+        {
+            ArmorItem = null;
+            activeArmor = Armor.NONE;
+            hp_up = false;
+            has_counter = false;
+            speed_up = false;
+            playerHealth.HandleArmorHealth("No Armor", false);
+            currentMaxSpeed = (speed_up) ? maxRunSpeed : maxWalkSpeed;
         }
     }
 
@@ -819,6 +884,7 @@ public class Player : MonoBehaviour
         speed_up = (ArmorItem.ArmorEnchantmentSlot == Item.ArmorEnchantment.SPEED_UP);
 
         //Some have instant effects that need to be applied
+        playerHealth = GetComponent<PlayerHealth>();
         playerHealth.HandleArmorHealth(ArmorItem.ItemName, hp_up);
         currentMaxSpeed = (speed_up) ? maxRunSpeed : maxWalkSpeed;
 
@@ -856,15 +922,43 @@ public class Player : MonoBehaviour
         return slideStrengh;
     }
 
+    public void Death()
+    {
+        is_dying = true;
+        rb.velocity = Vector2.zero;
+        rb.bodyType = RigidbodyType2D.Static;
+        //spriteAnimator.StartDying();
+    }
+
+    public bool IsDying()
+    {
+        return is_dying;
+    }
+    public bool IsBowCharging()
+    {
+        return bowTimer > -1f;
+    }
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Checkpoint") && interact_pressed_fixed && IsGrounded())
+        if (collision.gameObject.CompareTag("Checkpoint") && IsGrounded())
         {
-            interact_pressed_fixed = false;
-            playerHealth.RestoreHealth();
-            SaveSystem.Save(this, Inventory);
-            print("Saved!");
+            if (interact_pressed_fixed)
+            {
+                interact_pressed_fixed = false;
+                playerHealth.RestoreHealth();
+                AudioManager.instance.PlaySoundFXClip(AudioManager.instance.Checkpoint, transform);
+                SaveSystem.Save(this, Inventory);
+                print("Saved!");
+            }
+            if (crafting_pressed_fixed)
+            {
+                crafting_pressed_fixed = false;
+                playerHealth.RestoreHealth();
+                SaveSystem.Save(this, Inventory);
+                print("Saved!");
+                SceneManager.LoadSceneAsync(INVENTORY_SCENE_INDEX);
+            }
         }
     }
 }

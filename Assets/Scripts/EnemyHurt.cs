@@ -37,6 +37,7 @@ public class EnemyHurt : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (killed) return;
+        AudioManager.instance.PlaySoundFXClip(AudioManager.instance.Enemyhurt, transform);
         health-= damage;
         Debug.Log("Enemy remaining health: " +  health);
         if (health <= 0)

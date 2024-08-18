@@ -47,7 +47,8 @@ MonoBehaviour:
   Items: []
   inventorySlotPopulated: []
   ItemContent: {fileID: 0}
-  InventoryItem: {fileID: 9217124779986614110, guid: 0cf68e9f7a3170a4ca39882600cbf265, type: 3}
+  InventoryItem: {fileID: 9217124779986614110, guid: 0cf68e9f7a3170a4ca39882600cbf265,
+    type: 3}
   indexEquipment: 
   AllItemBases:
   - {fileID: 11400000, guid: 6d0478631c093ba4081a66d80c184291, type: 2}
@@ -61,14 +62,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 463f39e6f1a0b1945ba29cb558228382, type: 2}
   - {fileID: 11400000, guid: 9fc89bbe0720f1341abc41d520452138, type: 2}
   - {fileID: 11400000, guid: cc2b0592f505548459acbd4dd069068b, type: 2}
-  - {fileID: 11400000, guid: 69443fe9bf61b75468fc3d7619cf042a, type: 2}
+  - {fileID: 11400000, guid: aa368b1d97e067742982771d38f8f0b1, type: 2}
   - {fileID: 11400000, guid: a73359319c7369d4cb0ff553606e0680, type: 2}
   - {fileID: 11400000, guid: f1f166d8bd948774386344ee0da3f28b, type: 2}
   - {fileID: 11400000, guid: df96d8543088d694e8bffac4c562b0c5, type: 2}
   - {fileID: 11400000, guid: bb76a4fdd8369514eba3b166c6ba0e92, type: 2}
-  - {fileID: 11400000, guid: 265c34e47673dee4380d3180337fa98f, type: 2}
+  - {fileID: 11400000, guid: 57dc604b0ecb20e4780c32b1c5e98abb, type: 2}
   - {fileID: 11400000, guid: 2496d6bdda726964e9302330b1670712, type: 2}
   - {fileID: 11400000, guid: b951765540c96f246ac22cc023ab620d, type: 2}
-  - {fileID: 11400000, guid: 5a56a890006e8c54a90ba6090fe6e2af, type: 2}
+  - {fileID: 11400000, guid: e8480593a2f97344e85cea2b377d7f64, type: 2}
+  - {fileID: 11400000, guid: 5e208b95c5096bf41b4c0795b6050d46, type: 2}
+  - {fileID: 11400000, guid: 339782f08087249108e23c433d1f1dba, type: 2}
+  - {fileID: 11400000, guid: 339782f08087249108e23c433d1f1dba, type: 2}
   InventoryItems: []
   selectedItemsForRecipe: []
+  EquipmentItems: []

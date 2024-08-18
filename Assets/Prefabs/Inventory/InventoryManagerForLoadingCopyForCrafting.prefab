@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6650724198459089454
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4603446368565125638}
+  - component: {fileID: 4098587611392045143}
+  m_Layer: 0
+  m_Name: InventoryManagerForLoadingCopyForCrafting
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4603446368565125638
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6650724198459089454}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4098587611392045143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6650724198459089454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7735ae6346b908f4baf3976c3cf4d7cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Items: []
+  inventorySlotPopulated: []
+  ItemContent: {fileID: 0}
+  InventoryItem: {fileID: 9217124779986614110, guid: 0cf68e9f7a3170a4ca39882600cbf265, type: 3}
+  AllItems:
+  - {fileID: 11400000, guid: 6d0478631c093ba4081a66d80c184291, type: 2}
+  - {fileID: 11400000, guid: a7934aa51abd01542a68245df0b26140, type: 2}
+  - {fileID: 11400000, guid: ae0e74e6d3c3bad4c9d45982fb28fd97, type: 2}
+  - {fileID: 11400000, guid: 473d645e8ca13c74cbf1ac9dc5e00dc3, type: 2}
+  - {fileID: 11400000, guid: 10bc0f2d775d9d44c85c9e22225ae3ee, type: 2}
+  - {fileID: 11400000, guid: 70428ec11cf963a43bca6900cbb905ad, type: 2}
+  - {fileID: 11400000, guid: f54c5fbe66885ab45bbefd41f3409a29, type: 2}
+  - {fileID: 11400000, guid: 8958c3d8cbe3bee4d944afa7493cbe15, type: 2}
+  - {fileID: 11400000, guid: 463f39e6f1a0b1945ba29cb558228382, type: 2}
+  - {fileID: 11400000, guid: 9fc89bbe0720f1341abc41d520452138, type: 2}
+  - {fileID: 11400000, guid: cc2b0592f505548459acbd4dd069068b, type: 2}
+  - {fileID: 11400000, guid: 69443fe9bf61b75468fc3d7619cf042a, type: 2}
+  - {fileID: 11400000, guid: a73359319c7369d4cb0ff553606e0680, type: 2}
+  - {fileID: 11400000, guid: f1f166d8bd948774386344ee0da3f28b, type: 2}
+  - {fileID: 11400000, guid: df96d8543088d694e8bffac4c562b0c5, type: 2}
+  - {fileID: 11400000, guid: bb76a4fdd8369514eba3b166c6ba0e92, type: 2}
+  - {fileID: 11400000, guid: 265c34e47673dee4380d3180337fa98f, type: 2}
+  - {fileID: 11400000, guid: 2496d6bdda726964e9302330b1670712, type: 2}
+  - {fileID: 11400000, guid: b951765540c96f246ac22cc023ab620d, type: 2}
+  - {fileID: 11400000, guid: 5a56a890006e8c54a90ba6090fe6e2af, type: 2}
+  InventoryItems: []
+  selectedItemsForRecipe: []

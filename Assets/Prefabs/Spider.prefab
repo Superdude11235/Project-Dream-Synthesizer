@@ -82,8 +82,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxHealth: 2
   player: {fileID: 0}
-  ItemSpawns:
-  - {fileID: 1278364492301875207, guid: a3cb4a385006446e6b4e31dd73cf7b88, type: 3}
+  ItemSpawns: [{fileID: 1278364492301875207, guid: a3cb4a385006446e6b4e31dd73cf7b88,
+      type: 3}]
 --- !u!1 &1658735711788109171
 GameObject:
   m_ObjectHideFlags: 0

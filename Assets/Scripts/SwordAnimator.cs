@@ -29,7 +29,14 @@ public class SwordAnimator : MonoBehaviour
         if (animator.GetCurrentAnimatorStateInfo(0).IsName(SWORD_IDLE))
         {
             animator.SetTrigger(SWORD_SWUNG);
+            AudioManager.instance.PlaySoundFXClip(AudioManager.instance.Sword, transform);
         }
        
     }
+
+    public bool IsSwingingSword()
+    {
+        return !(animator.GetCurrentAnimatorStateInfo(0).IsName(SWORD_IDLE));
+    }
+
 }

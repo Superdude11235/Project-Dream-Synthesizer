@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Search;
+//using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.Rendering;
-using static UnityEditor.Progress;
+//using static UnityEditor.Progress;
 
 [System.Serializable]
 public class SaveData
@@ -31,6 +31,22 @@ public class SaveData
         armorItem = player.ArmorItem;
         has_cloud_boots = player.has_cloud_boots;
 
+    }
+
+    public SaveData(Player player)
+    {
+        position = Position(player.transform);
+        weaponItem = player.WeaponItem;
+        armorItem = player.ArmorItem;
+        has_cloud_boots = player.has_cloud_boots;
+    }
+
+    public SaveData(InventoryManager inventory)
+    {
+        itemNames = Items(inventory.Items);
+        weaponEnchantments = WeaponEnchantments(inventory.Items);
+        armorEnchantments = ArmorEnchantments(inventory.Items);
+        numItems = NumItems(inventory.Items);
     }
 
     public SaveData()

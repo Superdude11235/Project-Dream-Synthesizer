@@ -3,7 +3,11 @@ guid: b811129fc6525a749ade832e1470eafe
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - soundFXObject: {fileID: 6321073642289900785, guid: 5f916c9af32c82c449ca1e4d2a3d1626, type: 3}
+  - Jump: {fileID: 8300000, guid: 092d15de3a245764e908e2dbe549dc0b, type: 3}
+  - Slide: {fileID: 8300000, guid: d736eaa1af75f2b4b9dc39ce53103952, type: 3}
+  - PlayerHurt: {fileID: 8300000, guid: db5a44e56964e8149986c65e271d00e3, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

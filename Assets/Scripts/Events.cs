@@ -11,7 +11,8 @@ public class Events : MonoBehaviour
     public static event EventHandler Saveprogress;
     public static event EventHandler Loadprogress;
     public static event EventHandler Enemycountered;
-    
+    public static event EventHandler Gameover;
+    public static event EventHandler Getcloudboots;
     public static void EnemyDied()
     {
         if (Enemydied != null) Enemydied();
@@ -27,4 +28,13 @@ public class Events : MonoBehaviour
         if (Loadprogress != null) Loadprogress();
     }
 
+    public static void GetCloudBoots()
+    {
+        if (Getcloudboots != null) Getcloudboots();
+    }
+
+    public static void GameOver()
+    {
+        if (Gameover != null) Gameover();
+    }
 }

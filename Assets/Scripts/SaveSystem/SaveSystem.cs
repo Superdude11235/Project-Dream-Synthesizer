@@ -7,14 +7,22 @@ using System.Xml.Serialization;
 public static class SaveSystem
 {
 
-    static string path = Application.persistentDataPath + "/SaveData.sav";
-    public static void Save (Player player, InventoryManager inventory)
+    static string playerPath = Application.persistentDataPath + "/PlayerSaveData.sav";
+    static string inventoryPath = Application.persistentDataPath + "/InventorySaveData.sav";
+
+   
+   public static void Save(Player player, InventoryManager inventoryManager)
+    {
+        SavePlayer(player);
+        SaveInventory(inventoryManager);
+    } 
+    public static void SavePlayer (Player player)
     {
         BinaryFormatter formatter = new BinaryFormatter();
         
-        FileStream stream = new FileStream(path, FileMode.Create);
+        FileStream stream = new FileStream(playerPath, FileMode.Create);
 
-        SaveData data = new SaveData(player, inventory);
+        SaveData data = new SaveData(player);
 
         formatter.Serialize(stream, data);
 
@@ -24,12 +32,28 @@ public static class SaveSystem
         stream.Close();
     }
 
-    public static SaveData LoadData()
+    public static void SaveInventory(InventoryManager inventoryManager)
     {
-        if (File.Exists(path))
+        BinaryFormatter formatter = new BinaryFormatter();
+
+        FileStream stream = new FileStream(inventoryPath, FileMode.Create);
+
+        SaveData data = new SaveData(inventoryManager);
+
+        formatter.Serialize(stream, data);
+
+        //System.Xml.Serialization.XmlSerializer x = new System.Xml.Serialization.XmlSerializer(data.GetType());
+        //x.Serialize(stream, data);
+
+        stream.Close();
+    }
+
+    public static SaveData LoadPlayerData()
+    {
+        if (File.Exists(playerPath))
         {
             BinaryFormatter formatter = new BinaryFormatter();
-            FileStream stream = new FileStream(path, FileMode.Open);
+            FileStream stream = new FileStream(playerPath, FileMode.Open);
 
             SaveData data = formatter.Deserialize(stream) as SaveData;
             stream.Close();
@@ -39,21 +63,43 @@ public static class SaveSystem
         }
         else
         {
-            Debug.LogError("Save file not found in " + path);
+            Debug.LogError("Save file not found in " + playerPath);
+            return null;
+        }
+    }
+
+    public static SaveData LoadInventoryData()
+    {
+        if (File.Exists(inventoryPath))
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(inventoryPath, FileMode.Open);
+
+            SaveData data = formatter.Deserialize(stream) as SaveData;
+            stream.Close();
+
+            return data;
+
+        }
+        else
+        {
+            Debug.LogError("Save file not found in " + inventoryPath);
             return null;
         }
     }
 
     public static void DeleteData()
     {
-        if (File.Exists(path))
+        if (File.Exists(playerPath))
         {
-            File.Delete(path);
+            File.Delete(playerPath);
         }
+        if (File.Exists(inventoryPath)) File.Delete(inventoryPath);
+        if (InventoryManager.Instance != null) InventoryManager.Instance.resetInventory();
     }
 
     public static bool IsSaveData()
     {
-        return File.Exists(path);
+        return File.Exists(playerPath);
     }
 }

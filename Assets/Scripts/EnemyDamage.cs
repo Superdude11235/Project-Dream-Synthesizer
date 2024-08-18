@@ -31,8 +31,8 @@ public class EnemyDamage : MonoBehaviour
             if (!playerHealth.IsInvincible())
             {
                 //Player knockback
-                playerMovement.Knockback();
                 playerHealth.TakeDamage(damage);
+                playerMovement.Knockback();
                 if (playerMovement.has_counter) enemyHurt.TakeDamage(counter_damage);
             }
             

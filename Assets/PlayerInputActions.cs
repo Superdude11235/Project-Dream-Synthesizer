@@ -80,6 +80,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenCrafting"",
+                    ""type"": ""Button"",
+                    ""id"": ""e4696bba-c19f-4f97-8771-0ca7bce9ab8c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -236,6 +245,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d79c911d-2b68-45eb-9432-26ea3d676b7c"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenCrafting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -250,6 +270,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Duck = m_Player.FindAction("Duck", throwIfNotFound: true);
         m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_OpenCrafting = m_Player.FindAction("OpenCrafting", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -317,6 +338,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Duck;
     private readonly InputAction m_Player_Attack;
     private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_OpenCrafting;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -327,6 +349,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Duck => m_Wrapper.m_Player_Duck;
         public InputAction @Attack => m_Wrapper.m_Player_Attack;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        public InputAction @OpenCrafting => m_Wrapper.m_Player_OpenCrafting;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -354,6 +377,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @OpenCrafting.started += instance.OnOpenCrafting;
+            @OpenCrafting.performed += instance.OnOpenCrafting;
+            @OpenCrafting.canceled += instance.OnOpenCrafting;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -376,6 +402,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @OpenCrafting.started -= instance.OnOpenCrafting;
+            @OpenCrafting.performed -= instance.OnOpenCrafting;
+            @OpenCrafting.canceled -= instance.OnOpenCrafting;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -401,5 +430,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnDuck(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnOpenCrafting(InputAction.CallbackContext context);
     }
 }
